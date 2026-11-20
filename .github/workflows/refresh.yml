@@ -3,6 +3,9 @@ name: Refresh Working Proxies
 on:
   schedule:
     - cron: '*/30 * * * *'
+  push:
+    paths:
+      - 'denylist.txt'
   workflow_dispatch:
 
 permissions:
@@ -13,11 +16,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Run proxy tester
+      - name: Run proxy & adblock updater
         run: python3 update_pac.py
       - name: Save updated proxy.pac
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@://github.com"
           git add proxy.pac
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Update live proxies" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update live proxies and blocklists" && git push)
