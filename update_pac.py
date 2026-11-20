@@ -21,7 +21,7 @@ if os.path.exists("denylist.txt"):
         for line in f:
             domain = line.strip().lower()
             if domain and not domain.startswith("#"):
-                domain = domain.replace("https://", "").replace("http://", "").split("/")
+                domain = domain.replace("https://", "").replace("http://", "").split("/")[0]
                 if domain.startswith("www."):
                     domain = domain[4:]
                 blocked_domains.add(domain)
@@ -36,8 +36,8 @@ for url in ADBLOCK_SOURCES:
             if not line or line.startswith("#"):
                 continue
             parts = line.split()
-            if len(parts) >= 2 and parts in ("0.0.0.0", "127.0.0.1"):
-                domain = parts.lower()
+            if len(parts) >= 2 and parts[0] in ("0.0.0.0", "127.0.0.1"):
+                domain = parts[1].lower()
                 if domain not in ("localhost", "localhost.localdomain", "local", "broadcasthost"):
                     blocked_domains.add(domain)
     except Exception:
@@ -51,7 +51,7 @@ for url in PROXY_SOURCES:
         lines = req.read().decode("utf-8", errors="ignore").splitlines()
         for line in lines:
             line = line.strip()
-            if ":" in line and line.split(":").isdigit():
+            if ":" in line and line.split(":")[1].isdigit():
                 raw_proxies.add(line)
     except Exception:
         pass
